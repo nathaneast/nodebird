@@ -1,6 +1,3 @@
-const { DataTypes } = require("sequelize/types");
-const { sequelize } = require(".");
-
 module.exports = (sequelize, DataTypes) => {
   const Image = sequelize.define('Image', {
     src: {
@@ -9,7 +6,7 @@ module.exports = (sequelize, DataTypes) => {
     },
   }, {
     charset: 'utf8',
-    collate: 'utf8_gneral_ci',
+    collate: 'utf8_general_ci',
   });
   Image.associate = (db) => {
     db.Image.belongsTo(db.Post);

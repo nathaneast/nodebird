@@ -26,18 +26,19 @@ const FollowButton = ({ post }) => {
   <Button loading={followLoading || unfollowLoading} onClick={onClick}>
     {isFollowing ? '언팔로우' : '팔로우'}
   </Button>
-    );
+  );
 };
 
 FollowButton.propTypes = {
-  post: PropTypes.shape({
-    id: PropTypes.number,
-    User: PropTypes.object,
-    content: PropTypes.string,
-    createdAt: PropTypes.object,
-    Comments: PropTypes.arrayOf(PropTypes.any),
-    Images: PropTypes.arrayOf(PropTypes.any),
-  }),
+  post: PropTypes.object.isRequired,
+  // post: PropTypes.shape({
+  //   id: PropTypes.number,
+  //   User: PropTypes.object,
+  //   content: PropTypes.string,
+  //   createdAt: PropTypes.object,
+  //   Comments: PropTypes.arrayOf(PropTypes.any),
+  //   Images: PropTypes.arrayOf(PropTypes.any),
+  // }),
 };
 
 export default FollowButton;

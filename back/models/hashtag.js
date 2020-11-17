@@ -1,6 +1,3 @@
-const { DataTypes } = require("sequelize/types");
-const { sequelize } = require(".");
-
 module.exports = (sequelize, DataTypes) => {
   const Hashtag = sequelize.define('Hashtag', {
     name: {
@@ -9,10 +6,10 @@ module.exports = (sequelize, DataTypes) => {
     },
   }, {
     charset: 'utf8mb4',
-    collate: 'utf8mb4_gneral_ci',
+    collate: 'utf8mb4_general_ci',
   });
   Hashtag.associate = (db) => {
-    db.Hashtag.belongsToMany(db.Post);
+    db.Hashtag.belongsToMany(db.Post, { through: 'PostHashtag' });
   };
 
   return Hashtag;
