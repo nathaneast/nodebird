@@ -1,6 +1,5 @@
 import axios from 'axios';
 import { all, delay, fork, put, takeLatest, throttle, call } from 'redux-saga/effects';
-import shortId from 'shortid';
 
 import {
   ADD_COMMENT_FAILURE,
@@ -15,21 +14,19 @@ import {
   LOAD_POSTS_FAILURE,
   LOAD_POSTS_REQUEST,
   LOAD_POSTS_SUCCESS,
-  generateDummyPost,
 } from '../reducers/post';
 import { ADD_POST_TO_ME, REMOVE_POST_OF_ME } from '../reducers/user';
 
 function loadPostsAPI(data) {
-  return axios.get('/api/post', data);
+  return axios.get('/posts', data);
 }
 
 function* loadPosts(action) {
   try {
-    // const result = yield call(addPostAPI, action.data);
-    yield delay(1000);
+    const result = yield call(loadPostsAPI, action.data);
     yield put({
       type: LOAD_POSTS_SUCCESS,
-      data: generateDummyPost(10),
+      data: result.data,
     });
   } catch (err) {
     console.error(err);
@@ -95,11 +92,13 @@ function addCommentAPI(data) {
 function* addComment(action) {
   try {
     const result = yield call(addCommentAPI, action.data);
+    console.log(result, 'addComment');
     yield put({
       type: ADD_COMMENT_SUCCESS,
       data: result.data,
     });
   } catch (err) {
+    console.error(err);
     yield put({
       type: ADD_COMMENT_FAILURE,
       data: err.response.data,

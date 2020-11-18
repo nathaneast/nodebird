@@ -24,7 +24,7 @@ const AppLayout = ({ children }) => {
           </Link>
         </Menu.Item>
         <Menu.Item>
-          <Link href="/profile">
+          <Link href='/profile'>
             <a>프로필</a>
           </Link>
         </Menu.Item>
@@ -32,7 +32,7 @@ const AppLayout = ({ children }) => {
           <SearchInput enterButton />
         </Menu.Item>
         <Menu.Item>
-          <Link href="/signup">
+          <Link href='/signup'>
             <a>회원가입</a>
           </Link>
         </Menu.Item>

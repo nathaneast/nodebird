@@ -96,11 +96,11 @@ const PostCard = ({ post }) => {
                   author={item.User.nickname}
                   avatar={
                     <Link
-                      href={{ pathname: "/user", query: { id: item.User.id } }}
-                      as={`/user/${item.User.id}`}
+                      href={{ pathname: "/user", query: { id: item.id } }}
+                      as={`/user/${item.id}`}
                     >
                       <a>
-                        <Avatar>{item.User.nickname[0]}</Avatar>
+                        <Avatar>{item.User.nickname}</Avatar>
                       </a>
                     </Link>
                   }
