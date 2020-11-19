@@ -18,14 +18,14 @@ const Profile = () => {
     }
   }, [me && me.id]);
 
-  // useEffect(() => {
-  //   dispatch({
-  //     type: LOAD_FOLLOWERS_REQUEST,
-  //   });
-  //   dispatch({
-  //     type: LOAD_FOLLOWINGS_REQUEST,
-  //   });
-  // }, []);
+  useEffect(() => {
+    dispatch({
+      type: LOAD_FOLLOWERS_REQUEST,
+    });
+    dispatch({
+      type: LOAD_FOLLOWINGS_REQUEST,
+    });
+  }, []);
 
   if (!me) {
     return null;
@@ -44,6 +44,6 @@ const Profile = () => {
       </AppLayout>
     </>
   );
-}
+};
 
 export default Profile;

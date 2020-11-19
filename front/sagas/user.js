@@ -29,15 +29,38 @@ import {
   LOAD_FOLLOWINGS_REQUEST,
   LOAD_FOLLOWINGS_SUCCESS,
   LOAD_FOLLOWINGS_FAILURE,
+  REMOVE_FOLLOWER_REQUEST,
+  REMOVE_FOLLOWER_SUCCESS,
+  REMOVE_FOLLOWER_FAILURE,
 } from '../reducers/user';
 
-function loadFollowingsAPI(data) {
-  return axios.get('/user/followings', data);
+function removeFollowerAPI(data) {
+  return axios.delete(`/user/follower/${data}`);
 }
 
-function* loadFollowings(action) {
+function* removeFollower(action) {
   try {
-    const result = yield call(loadFollowingsAPI, action.data);
+    const result = yield call(removeFollowerAPI, action.data);
+    yield put({
+      type: REMOVE_FOLLOWER_SUCCESS,
+      data: result.data,
+    });
+  } catch (err) {
+    console.error(err);
+    yield put({
+      type: REMOVE_FOLLOWER_FAILURE,
+      error: err.response.data,
+    });
+  }
+}
+
+function loadFollowingsAPI() {
+  return axios.get('/user/followings');
+}
+
+function* loadFollowings() {
+  try {
+    const result = yield call(loadFollowingsAPI);
     yield put({
       type: LOAD_FOLLOWINGS_SUCCESS,
       data: result.data,
@@ -51,13 +74,13 @@ function* loadFollowings(action) {
   }
 }
 
-function loadFollowersAPI(data) {
-  return axios.get('/user/followers', data);
+function loadFollowersAPI() {
+  return axios.get('/user/followers');
 }
 
-function* loadFollowers(action) {
+function* loadFollowers() {
   try {
-    const result = yield call(loadFollowersAPI, action.data);
+    const result = yield call(loadFollowersAPI);
     yield put({
       type: LOAD_FOLLOWERS_SUCCESS,
       data: result.data,
@@ -211,6 +234,9 @@ function* unfollow(action) {
   }
 }
 
+function* watchRemoveFollower() {
+  yield takeLatest(REMOVE_FOLLOWER_REQUEST, removeFollower);
+}
 function* watchLoadFollowings() {
   yield takeLatest(LOAD_FOLLOWINGS_REQUEST, loadFollowings);
 }
@@ -249,6 +275,7 @@ function* watchSignUp() {
 
 export default function* userSaga() {
   yield all([
+    fork(watchRemoveFollower),
     fork(watchLoadFollowings),
     fork(watchLoadFollowers),
     fork(watchChangeNickname),
