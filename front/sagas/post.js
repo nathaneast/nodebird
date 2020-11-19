@@ -41,7 +41,6 @@ function* retweet(action) {
       data: result.data,
     });
   } catch (err) {
-    console.error(err);
     yield put({
       type: RETWEET_FAILURE,
       error: err.response.data,
@@ -61,7 +60,7 @@ function* uploadImages(action) {
       data: result.data,
     });
   } catch (err) {
-    console.error(err);
+    console.log(err);
     yield put({
       type: UPLOAD_IMAGES_FAILURE,
       error: err.response.data,
@@ -81,7 +80,7 @@ function* unlikePost(action) {
       data: result.data,
     });
   } catch (err) {
-    console.error(err);
+    console.log(err);
     yield put({
       type: UNLIKE_POST_FAILURE,
       error: err.response.data,
@@ -101,7 +100,7 @@ function* likePost(action) {
       data: result.data,
     });
   } catch (err) {
-    console.error(err);
+    console.log(err);
     yield put({
       type: LIKE_POST_FAILURE,
       error: err.response.data,
@@ -109,19 +108,20 @@ function* likePost(action) {
   }
 }
 
-function loadPostsAPI(data) {
-  return axios.get('/posts', data);
+function loadPostsAPI(lastId) {
+  return axios.get(`/posts?lastId=${lastId || 0}`);
 }
 
 function* loadPosts(action) {
   try {
-    const result = yield call(loadPostsAPI, action.data);
+    const result = yield call(loadPostsAPI, action.lastId);
+    console.log(result, 'loadPosts');
     yield put({
       type: LOAD_POSTS_SUCCESS,
       data: result.data,
     });
   } catch (err) {
-    console.error(err);
+    console.log(err);
     yield put({
       type: LOAD_POSTS_FAILURE,
       error: err.response.data,
@@ -145,7 +145,7 @@ function* addPost(action) {
       data: result.data.id,
     });
   } catch (err) {
-    console.error(err);
+    console.log(err);
     yield put({
       type: ADD_POST_FAILURE,
       error: err.response.data,
@@ -169,7 +169,7 @@ function* removePost(action) {
       data: result.data,
     });
   } catch (err) { 
-    console.error(err);
+    console.log(err);
     yield put({
       type: REMOVE_POST_FAILURE,
       error: err.response.data,
@@ -190,7 +190,7 @@ function* addComment(action) {
       data: result.data,
     });
   } catch (err) {
-    console.error(err);
+    console.log(err);
     yield put({
       type: ADD_COMMENT_FAILURE,
       error: err.response.data,

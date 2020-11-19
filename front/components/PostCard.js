@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect } from 'react';
+import React, { useState, useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import Link from 'next/link';
@@ -19,15 +19,10 @@ import FollowButton from './FollowButton';
 
 const PostCard = ({ post }) => {
   const [commentFormOpened, setCommentFormOpened] = useState(false);
-  const { removePostLoading, retweetError } = useSelector((state) => state.post);
+  const { removePostLoading } = useSelector((state) => state.post);
   const id = useSelector((state) => state.user.me?.id);
   const dispatch = useDispatch();
 
-  // useEffect(() => {
-  //   if (retweetError) {
-  //     alert (retweetError);
-  //   }
-  // }, [retweetError]);
 
   const onRemovePost = useCallback(() => {
     if (!id) {
@@ -93,12 +88,17 @@ const PostCard = ({ post }) => {
           <MessageOutlined key="comment" onClick={onToggleComment} />,
           <Popover
             key="more"
-            content={
+            content={(
               <Button.Group>
                 {id && post.User.id === id ? (
                   <>
                     <Button>수정</Button>
-                    <Button type="primary" danger onClick={onRemovePost} loading={removePostLoading}>
+                    <Button
+                      type="primary"
+                      danger
+                      onClick={onRemovePost}
+                      loading={removePostLoading}
+                    >
                       삭제
                     </Button>
                   </>
@@ -106,18 +106,35 @@ const PostCard = ({ post }) => {
                   <Button>신고</Button>
                 )}
               </Button.Group>
-            }
+            )}
           >
             <EllipsisOutlined />
           </Popover>,
         ]}
+        title={post.RetweetId ? `${post.User.nickname}님이 리트윗 하셨습니다.` : null}
         extra={id !== post.User.id && <FollowButton post={post} />}
       >
-        <Card.Meta
-          avatar={<Avatar>{post.User.nickname[0]}</Avatar>}
-          title={post.User.nickname}
-          description={<PostCardContent postData={post.content} />}
-        />
+        {post.RetweetId && post.Retweet ? (
+          <Card
+            cover={
+              post.Retweet.Images[0] && (
+                <PostImages images={post.Retweet.Images} />
+              )
+            }
+          >
+            <Card.Meta
+              avatar={<Avatar>{post.Retweet.User.nickname[0]}</Avatar>}
+              title={post.Retweet.User.nickname}
+              description={<PostCardContent postData={post.Retweet.content} />}
+            />
+          </Card>
+        ) : (
+          <Card.Meta
+            avatar={<Avatar>{post.User.nickname[0]}</Avatar>}
+            title={post.User.nickname}
+            description={<PostCardContent postData={post.content} />}
+          />
+        )}
       </Card>
       {commentFormOpened && (
         <>
@@ -130,7 +147,7 @@ const PostCard = ({ post }) => {
               <li>
                 <Comment
                   author={item.User.nickname}
-                  avatar={
+                  avatar={(
                     <Link
                       href={{ pathname: "/user", query: { id: item.id } }}
                       as={`/user/${item.id}`}
@@ -139,7 +156,7 @@ const PostCard = ({ post }) => {
                         <Avatar>{item.User.nickname}</Avatar>
                       </a>
                     </Link>
-                  }
+                  )}
                   content={item.content}
                 />
               </li>
@@ -160,7 +177,9 @@ PostCard.propTypes = {
     Comments: PropTypes.arrayOf(PropTypes.any),
     Images: PropTypes.arrayOf(PropTypes.any),
     Likers: PropTypes.arrayOf(PropTypes.object),
-  }),
+    RetweetId: PropTypes.number,
+    Retweet: PropTypes.objectOf(PropTypes.any),
+  }).isRequired,
 };
 
 export default PostCard;

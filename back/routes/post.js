@@ -161,12 +161,12 @@ router.post('/images', isLoggedIn, upload.array('image'), (req, res, next) => {
   res.json(req.files.map((v) => v.filename));
 });
 
-router.post('/:postId/retweet', isLoggedIn, (req, res, next) => {
+router.post('/:postId/retweet', isLoggedIn, async (req, res, next) => {
   try {
     const post = await Post.findOne({
       where: { id: req.params.postId },
       include: [{
-        mdoel: Post,
+        model: Post,
         as: 'Retweet',
       }],
     });
@@ -183,7 +183,7 @@ router.post('/:postId/retweet', isLoggedIn, (req, res, next) => {
     if (exPost) {
       return res.status(403).send('이미 리트윗 했습니다.');
     }
-    const retweet = await Post.crete({
+    const retweet = await Post.create({
       UserId: req.user.id,
       RetweetId: retweetTargetId,
       content: 'retweet',

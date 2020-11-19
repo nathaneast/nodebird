@@ -10,7 +10,13 @@ import { LOAD_POSTS_REQUEST } from '../reducers/post';
 const Home = () => {
   const dispatch = useDispatch();
   const { me } = useSelector((state) => state.user);
-  const { mainPosts, hasMorePosts, loadPostsLoading } = useSelector((state) => state.post);
+  const { mainPosts, hasMorePosts, loadPostsLoading, retweetError } = useSelector((state) => state.post);
+
+  useEffect(() => {
+    if (retweetError) {
+      alert(retweetError);
+    }
+  }, [retweetError]);
 
   useEffect(() => {
     dispatch({
@@ -24,9 +30,11 @@ const Home = () => {
   useEffect(() => {
     function onScroll() {
       if (Math.floor(window.scrollY) + document.documentElement.clientHeight > document.documentElement.scrollHeight - 300) {
+        const lastId = mainPosts[mainPosts.length - 1]?.id;
         if (hasMorePosts && !loadPostsLoading) {
           dispatch({
             type: LOAD_POSTS_REQUEST,
+            lastId,
           });
         }
       }
@@ -35,7 +43,7 @@ const Home = () => {
     return () => {
       window.removeEventListener('scroll', onScroll);
     };
-  }, [hasMorePosts, loadPostsLoading]);
+  }, [hasMorePosts, loadPostsLoading, mainPosts]);
 
   return (
     <AppLayout>
