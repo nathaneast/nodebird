@@ -1,19 +1,26 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import Head from 'next/head';
 import { useDispatch, useSelector } from 'react-redux';
 import Router from 'next/router';
 import { END } from 'redux-saga';
 import axios from 'axios';
+import useSWR from 'swr';
 
 import AppLayout from '../components/AppLayout';
 import NicknameEditForm from '../components/NicknameEditForm';
 import FollowList from '../components/FollowList';
-import { LOAD_FOLLOWERS_REQUEST, LOAD_FOLLOWINGS_REQUEST, LOAD_MY_INFO_REQUEST } from '../reducers/user';
+import { LOAD_MY_INFO_REQUEST } from '../reducers/user';
 import wrapper from '../store/configureStore';
 
+const fetcher = (url) => axios.get(url, { withCredentials: true })
+  .then((result) => result.data);
+
 const Profile = () => {
-  const dispatch = useDispatch();
   const { me } = useSelector((state) => state.user);
+  const [followersLimit, setFollowersLimit] = useState(3);
+  const [followingsLimit, setFollowingsLimit] = useState(3);
+  const { data: followersData, error: followerError } = useSWR(`http://localhost:3065/user/followers?limit=${followersLimit}`, fetcher);
+  const { data: followingsData, error: followingError } = useSWR(`http://localhost:3065/user/followings?limit=${followingsLimit}`, fetcher);
 
   useEffect(() => {
     if (!(me && me.id)) {
@@ -21,13 +28,12 @@ const Profile = () => {
     }
   }, [me && me.id]);
 
-  useEffect(() => {
-    dispatch({
-      type: LOAD_FOLLOWERS_REQUEST,
-    });
-    dispatch({
-      type: LOAD_FOLLOWINGS_REQUEST,
-    });
+  const loadMoreFollowers = useCallback(() => {
+    setFollowersLimit((prev) => prev + 3);
+  }, []);
+
+  const loadMoreFollowings = useCallback(() => {
+    setFollowingsLimit((prev) => prev + 3);
   }, []);
 
   if (!me) {
@@ -42,8 +48,18 @@ const Profile = () => {
       </Head>
       <AppLayout>
         <NicknameEditForm />
-        <FollowList header="팔로잉 목록" data={me.Followings} />
-        <FollowList header="팔로워 목록" data={me.Followers} />
+        <FollowList 
+          header="팔로잉 목록"
+          data={followingsData}
+          onClickMore={loadMoreFollowings}
+          loading={!followingsData && !followingError}
+        />
+        <FollowList 
+          header="팔로워 목록"
+          data={followersData}
+          onClickMore={loadMoreFollowers}
+          loading={!followersData && !followerError}
+        />
       </AppLayout>
     </>
   );

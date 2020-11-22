@@ -50,6 +50,7 @@ function* loadUserPosts(action) {
       data: result.data,
     });
   } catch (err) {
+    console.error(err);
     yield put({
       type: LOAD_USER_POSTS_FAILURE,
       error: err.response.data,
@@ -58,7 +59,7 @@ function* loadUserPosts(action) {
 }
 
 function loadHashtagPostsAPI(data, lastId) {
-  return axios.get(`/hashtag/${data}?lastId=${lastId || 0}`);
+  return axios.get(`/hashtag/${encodeURIComponent(data)}?lastId=${lastId || 0}`);
 }
 
 function* loadHashtagPosts(action) {
@@ -70,6 +71,7 @@ function* loadHashtagPosts(action) {
       data: result.data,
     });
   } catch (err) {
+    console.error(err);
     yield put({
       type: LOAD_HASHTAG_POSTS_FAILURE,
       error: err.response.data,
@@ -90,6 +92,7 @@ function* loadPost(action) {
       data: result.data,
     });
   } catch (err) {
+    console.error(err);
     yield put({
       type: LOAD_POST_FAILURE,
       error: err.response.data,
@@ -109,6 +112,7 @@ function* retweet(action) {
       data: result.data,
     });
   } catch (err) {
+    console.error(err);
     yield put({
       type: RETWEET_FAILURE,
       error: err.response.data,
@@ -128,7 +132,7 @@ function* uploadImages(action) {
       data: result.data,
     });
   } catch (err) {
-    console.log(err);
+    console.error(err);
     yield put({
       type: UPLOAD_IMAGES_FAILURE,
       error: err.response.data,
@@ -168,7 +172,7 @@ function* likePost(action) {
       data: result.data,
     });
   } catch (err) {
-    console.log(err);
+    console.error(err);
     yield put({
       type: LIKE_POST_FAILURE,
       error: err.response.data,
@@ -258,7 +262,7 @@ function* addComment(action) {
       data: result.data,
     });
   } catch (err) {
-    console.log(err);
+    console.error(err);
     yield put({
       type: ADD_COMMENT_FAILURE,
       error: err.response.data,

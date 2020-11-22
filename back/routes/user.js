@@ -38,35 +38,38 @@ router.get('/', async (req, res, next) => {
   }
 });
 
-router.get('/:id', async (req, res, next) => { // GET /user/3
+router.get('/followers', isLoggedIn, async (req, res, next) => {
   try {
-    const fullUserWithoutPassword = await User.findOne({
-      where: { id: req.params.id },
-      attributes: {
-        exclude: ['password']
-      },
-      include: [{
-        model: Post,
-        attributes: ['id'],
-      }, {
-        model: User,
-        as: 'Followings',
-        attributes: ['id'],
-      }, {
-        model: User,
-        as: 'Followers',
-        attributes: ['id'],
-      }]
-    })
-    if (fullUserWithoutPassword) {
-      const data = fullUserWithoutPassword.toJSON();
-      data.Posts = data.Posts.length;
-      data.Followings = data.Followings.length;
-      data.Followers = data.Followers.length;
-      res.status(200).json(data);
-    } else {
-      res.status(404).json('존재하지 않는 사용자입니다.');
+    const user = await User.findOne({ where: { id: req.user.id }});
+    if(!user) {
+      return res.status(403).send('유저가 존재하지 않습니다.');
     }
+    const followers = await user.getFollowers({
+      attributes: {
+        exclude: ["password"],
+      },
+      limit: parseInt(req.query.limit, 10),
+    });
+    res.status(200).json(followers);
+  } catch (error) {
+    console.error(error);
+    next(error);
+  }
+});
+
+router.get('/followings', isLoggedIn, async (req, res, next) => {
+  try {
+    const user = await User.findOne({ where: { id: req.user.id }});
+    if(!user) {
+      return res.status(403).send('유저가 존재하지 않습니다.');
+    }
+    const followings = await user.getFollowings({
+      attributes: {
+        exclude: ["password"],
+      },
+      limit: parseInt(req.query.limit, 10),
+    });
+    res.status(200).json(followings);
   } catch (error) {
     console.error(error);
     next(error);
@@ -150,6 +153,41 @@ router.patch('/nickname', isLoggedIn, async (req, res, next) => {
   }
 });
 
+router.get('/:id', async (req, res, next) => { // GET /user/3
+  try {
+    const fullUserWithoutPassword = await User.findOne({
+      where: { id: req.params.id },
+      attributes: {
+        exclude: ['password']
+      },
+      include: [{
+        model: Post,
+        attributes: ['id'],
+      }, {
+        model: User,
+        as: 'Followings',
+        attributes: ['id'],
+      }, {
+        model: User,
+        as: 'Followers',
+        attributes: ['id'],
+      }]
+    })
+    if (fullUserWithoutPassword) {
+      const data = fullUserWithoutPassword.toJSON();
+      data.Posts = data.Posts.length;
+      data.Followings = data.Followings.length;
+      data.Followers = data.Followers.length;
+      res.status(200).json(data);
+    } else {
+      res.status(404).json('존재하지 않는 사용자입니다.');
+    }
+  } catch (error) {
+    console.error(error);
+    next(error);
+  }
+});
+
 router.patch('/:userId/follow', isLoggedIn, async (req, res, next) => {
   try {
     const user = await User.findOne({ where: { id: req.params.userId }});
@@ -186,42 +224,6 @@ router.delete('/follower/:userId', isLoggedIn, async (req, res, next) => {
     }
     await user.removeFollowings(req.user.id);
     res.status(200).json({ UserId: parseInt(req.params.userId, 10)  });
-  } catch (error) {
-    console.error(error);
-    next(error);
-  }
-});
-
-router.get('/followers', isLoggedIn, async (req, res, next) => {
-  try {
-    const user = await User.findOne({ where: { id: req.user.id }});
-    if(!user) {
-      return res.status(403).send('유저가 존재하지 않습니다.');
-    }
-    const followers = await user.getFollowers({
-      attributes: {
-        exclude: ["password"],
-      },
-    });
-    res.status(200).json(followers);
-  } catch (error) {
-    console.error(error);
-    next(error);
-  }
-});
-
-router.get('/followings', isLoggedIn, async (req, res, next) => {
-  try {
-    const user = await User.findOne({ where: { id: req.user.id }});
-    if(!user) {
-      return res.status(403).send('유저가 존재하지 않습니다.');
-    }
-    const followings = await user.getFollowings({
-      attributes: {
-        exclude: ["password"],
-      },
-    });
-    res.status(200).json(followings);
   } catch (error) {
     console.error(error);
     next(error);

@@ -10,12 +10,15 @@ import {
   RetweetOutlined,
   HeartTwoTone,
 } from '@ant-design/icons';
+import moment from 'moment';
 
 import PostImages from './PostImages';
 import CommentForm from './CommentForm';
 import PostCardContent from './PostCardContent';
 import { REMOVE_POST_REQUEST, LIKE_POST_REQUEST, UNLIKE_POST_REQUEST, RETWEET_REQUEST } from '../reducers/post';
 import FollowButton from './FollowButton';
+
+moment.locale("ko");
 
 const PostCard = ({ post }) => {
   const [commentFormOpened, setCommentFormOpened] = useState(false);
@@ -88,7 +91,7 @@ const PostCard = ({ post }) => {
           <MessageOutlined key="comment" onClick={onToggleComment} />,
           <Popover
             key="more"
-            content={(
+            content={
               <Button.Group>
                 {id && post.User.id === id ? (
                   <>
@@ -106,12 +109,14 @@ const PostCard = ({ post }) => {
                   <Button>신고</Button>
                 )}
               </Button.Group>
-            )}
+            }
           >
             <EllipsisOutlined />
           </Popover>,
         ]}
-        title={post.RetweetId ? `${post.User.nickname}님이 리트윗 하셨습니다.` : null}
+        title={
+          post.RetweetId ? `${post.User.nickname}님이 리트윗 하셨습니다.` : null
+        }
         extra={id !== post.User.id && <FollowButton post={post} />}
       >
         {post.RetweetId && post.Retweet ? (
@@ -122,18 +127,38 @@ const PostCard = ({ post }) => {
               )
             }
           >
+            <span style={{ float: "right" }}>
+              {moment(post.createdAt).format("YYYY.MM.DD")}
+            </span>
             <Card.Meta
-              avatar={<Avatar>{post.Retweet.User.nickname[0]}</Avatar>}
+              avatar={
+                <Link href={`/user/${post.Retweet.User.id}`}>
+                  <a>
+                    <Avatar>{post.Retweet.User.nickname[0]}</Avatar>
+                  </a>
+                </Link>
+              }
               title={post.Retweet.User.nickname}
               description={<PostCardContent postData={post.Retweet.content} />}
             />
           </Card>
         ) : (
-          <Card.Meta
-            avatar={<Avatar>{post.User.nickname[0]}</Avatar>}
-            title={post.User.nickname}
-            description={<PostCardContent postData={post.content} />}
-          />
+          <>
+            <span style={{ float: "right" }}>
+              {moment(post.createdAt).format("YYYY.MM.DD")}
+            </span>
+            <Card.Meta
+              avatar={
+                <Link href={`/user/${post.User.id}`}>
+                  <a>
+                    <Avatar>{post.User.nickname[0]}</Avatar>
+                  </a>
+                </Link>
+              }
+              title={post.User.nickname}
+              description={<PostCardContent postData={post.content} />}
+            />
+          </>
         )}
       </Card>
       {commentFormOpened && (
@@ -147,7 +172,7 @@ const PostCard = ({ post }) => {
               <li>
                 <Comment
                   author={item.User.nickname}
-                  avatar={(
+                  avatar={
                     <Link
                       href={{ pathname: "/user", query: { id: item.id } }}
                       as={`/user/${item.id}`}
@@ -156,7 +181,7 @@ const PostCard = ({ post }) => {
                         <Avatar>{item.User.nickname}</Avatar>
                       </a>
                     </Link>
-                  )}
+                  }
                   content={item.content}
                 />
               </li>
