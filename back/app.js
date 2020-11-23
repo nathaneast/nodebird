@@ -33,7 +33,7 @@ if (process.env.NODE_ENV === 'production') {
   app.use(morgan('dev'));
 }
 app.use(cors({
-  origin: ['http://localhost:3060', 'http://nodebird.shop', 'http://13.124.45.136'],
+  origin: ['http://localhost:3060', 'http://nodebird.shop', 'http://3.36.22.225'],
   credentials: true,
 }));
 app.use('/', express.static(path.join(__dirname, 'uploads')));
