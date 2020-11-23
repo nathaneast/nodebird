@@ -7,7 +7,7 @@ const dotenv = require('dotenv');
 const morgan = require('morgan');
 const path = require('path');
 const hpp = require('hpp');
-const helmet = requrie('helmet');
+const helmet = require('helmet');
 
 const postRouter = require('./routes/post');
 const postsRouter = require('./routes/posts');
