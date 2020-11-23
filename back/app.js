@@ -23,7 +23,6 @@ db.sequelize.sync()
   console.log('db 연결 성공!');
 })
 .catch(console.error);
-
 passportConfig();
 
 if (process.env.NODE_ENV === 'production') {
@@ -34,7 +33,7 @@ if (process.env.NODE_ENV === 'production') {
   app.use(morgan('dev'));
 }
 app.use(cors({
-  origin: ['http://localhost:3060', 'http://nodebird.com', 'http://13.124.45.136'],
+  origin: ['http://localhost:3060', 'http://nodebird.shop', 'http://13.124.45.136'],
   credentials: true,
 }));
 app.use('/', express.static(path.join(__dirname, 'uploads')));
