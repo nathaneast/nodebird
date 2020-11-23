@@ -47,7 +47,7 @@ app.use(session({
   cookie: {
     httpOnly: true,
     secure: false,
-    domain: process.env.NODE_ENV === 'production' && '.nodebird.com'
+    domain: process.env.NODE_ENV === 'production' && '.nodebird.shop'
   },
 }));
 app.use(passport.initialize());
