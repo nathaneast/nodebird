@@ -30,7 +30,7 @@ router.get('/', async (req, res, next) => {
       });
       res.status(200).json(fullUserWithoutPassword);
     } else {
-      res.status(200).json(1);
+      res.status(200).json(null);
     }
   } catch (error) {
     console.error(error);
