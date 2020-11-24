@@ -100,9 +100,11 @@ router.post('/login', isNotLoggedIn, (req, res, next) => {
         }, {
           model: User,
           as: 'Followings',
+          attributes: ['id'],
         }, {
           model: User,
           as: 'Followers',
+          attributes: ['id'],
         }]
       });
       return res.status(200).json(fullUserWithoutPassword);

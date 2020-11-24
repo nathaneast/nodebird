@@ -38,7 +38,12 @@ const LoginForm = () => {
       <div>
         <label htmlFor="user-email">아이디</label>
         <br />
-        <Input name="user-email" value={email} onChange={onChangeEmail} required />
+        <Input
+          name="user-email"
+          value={email}
+          onChange={onChangeEmail}
+          required
+        />
       </div>
       <div>
         <label htmlFor="user-password">비밀번호</label>
@@ -56,9 +61,9 @@ const LoginForm = () => {
           로그인
         </Button>
         <Link href="/signup">
-          <Button>
-            <a>회원가입</a>
-          </Button>
+          <a>
+            <Button>회원가입</Button>
+          </a>
         </Link>
       </ButtonWrapper>
     </FormWrapper>
