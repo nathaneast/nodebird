@@ -1,5 +1,5 @@
 import React from 'react';
-import Proptypes from 'prop-types';
+import PropTypes from 'prop-types';
 import Head from 'next/head';
 import 'antd/dist/antd.css';
 
@@ -15,8 +15,8 @@ const NodeBird = ({ Component }) => (
   </>
 );
 
-NodeBird.prototype = {
-  Component: Proptypes.elementType.isRequired,
+NodeBird.propTypes = {
+  Component: PropTypes.elementType.isRequired,
 };
 
 export default wrapper.withRedux(NodeBird);

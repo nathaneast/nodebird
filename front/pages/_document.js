@@ -5,7 +5,7 @@ import Document, {
 import { ServerStyleSheet } from 'styled-components';
 
 export default class MyDocument extends Document {
-  static async getInitialProps(ctx) {
+  static async getInitalProps(ctx) {
     const sheet = new ServerStyleSheet();
     const originalRenderPage = ctx.renderPage;
 
@@ -24,6 +24,8 @@ export default class MyDocument extends Document {
           </>
         ),
       };
+    } catch (error) {
+      console.error(error);
     } finally {
       sheet.seal();
     }

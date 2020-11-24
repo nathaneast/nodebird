@@ -26,20 +26,11 @@ const Home = () => {
     }
   }, [retweetError]);
 
-  // useEffect(() => {
-  //   dispatch({
-  //     type: LOAD_MY_INFO_REQUEST,
-  //   });
-  //   dispatch({
-  //     type: LOAD_POSTS_REQUEST,
-  //   });
-  // }, []);
-
   useEffect(() => {
     function onScroll() {
       if (Math.floor(window.scrollY) + document.documentElement.clientHeight > document.documentElement.scrollHeight - 300) {
-        const lastId = mainPosts[mainPosts.length - 1]?.id;
         if (hasMorePosts && !loadPostsLoading) {
+          const lastId = mainPosts[mainPosts.length - 1]?.id;
           dispatch({
             type: LOAD_POSTS_REQUEST,
             lastId,
