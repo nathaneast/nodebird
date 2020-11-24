@@ -24,6 +24,7 @@ db.sequelize.sync()
 })
 .catch(console.error);
 passportConfig();
+app.disable('etag');
 
 if (process.env.NODE_ENV === 'production') {
   app.use(morgan('combined'));
