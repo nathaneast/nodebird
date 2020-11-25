@@ -21,7 +21,15 @@ const config = require('./config/config')[env];
 dotenv.config();
 const app = express();
 
+db.sequelize.sync()
+.then(() => {
+  console.log('db 연결 성공!');
+})
+.catch(console.error);
+passportConfig();
+
 /////////////////////////////////////////////////
+
 const MySQLStore = require('express-mysql-session')(session);
 
 const options = {
@@ -32,18 +40,10 @@ const options = {
   database: config.database,
 };
 
-const connection = db.createConnection(options); // or mysql.createPool(options);
+const connection = db.sequelize.createConnection(options); // or mysql.createPool(options);
 const sessionStore = new MySQLStore({options}/* session store options */, connection);
 
 /////////////////////////////////////////////////
-
-
-db.sequelize.sync()
-.then(() => {
-  console.log('db 연결 성공!');
-})
-.catch(console.error);
-passportConfig();
 
 if (process.env.NODE_ENV === 'production') {
   app.use(morgan('combined'));
