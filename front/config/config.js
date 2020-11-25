@@ -1,1 +1,1 @@
-export const backUrl = 'http://nodebird.shop';
+export const backUrl = 'http://api.nodebird.shop';

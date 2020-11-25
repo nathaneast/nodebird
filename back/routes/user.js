@@ -2,10 +2,11 @@ const express = require('express');
 const bcrypt = require('bcrypt');
 const passport = require('passport');
 const { Op } = require('sequelize');
-const router = express.Router();
 
 const { User, Post, Image, Comment } = require('../models');
 const { isLoggedIn, isNotLoggedIn } = require('./middlewares');
+
+const router = express.Router();
 
 router.get('/', async (req, res, next) => {
   try {
@@ -97,6 +98,8 @@ router.post('/login', isNotLoggedIn, (req, res, next) => {
         },  
         include: [{
           model: Post,
+          attributes: ['id'],
+
         }, {
           model: User,
           as: 'Followings',
@@ -143,10 +146,10 @@ router.post('/logout', isLoggedIn, (req, res) => {
 
 router.patch('/nickname', isLoggedIn, async (req, res, next) => {
   try {
-    const user = await User.update({
+    await User.update({
       nickname: req.body.nickname,
     }, {
-      where: { id: req.user.id }
+      where: { id: req.user.id },
     });
     res.status(200).json({ nickname: req.body.nickname });
   } catch (error) {
