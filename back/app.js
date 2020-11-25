@@ -29,7 +29,7 @@ db.sequelize.sync()
 passportConfig();
 
 /////////////////////////////////////////////////
-
+const mysql = require('mysql2');
 const MySQLStore = require('express-mysql-session')(session);
 
 const options = {
@@ -40,7 +40,7 @@ const options = {
   database: config.database,
 };
 
-const connection = db.sequelize.createConnection(options); // or mysql.createPool(options);
+const connection = mysql.createConnection(options); // or mysql.createPool(options);
 const sessionStore = new MySQLStore({options}/* session store options */, connection);
 
 /////////////////////////////////////////////////
