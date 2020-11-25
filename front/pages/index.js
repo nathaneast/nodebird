@@ -60,7 +60,6 @@ export const getServerSideProps = wrapper.getServerSideProps(async (context) => 
   }
   context.store.dispatch({
     type: LOAD_MY_INFO_REQUEST,
-    lastId: 12,
   });
   context.store.dispatch({
     type: LOAD_POSTS_REQUEST,
