@@ -20,7 +20,7 @@ dotenv.config();
 const app = express();
 
 const env = process.env.NODE_ENV || 'development';
-const config = require('../config/config')[env];
+const config = require('./config/config')[env];
 const Sequelize = require("sequelize");
 const SequelizeStore = require("connect-session-sequelize")(session.Store);
 const sequelize = new Sequelize(config.database, config.username, config.password, {
