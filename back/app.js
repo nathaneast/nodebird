@@ -16,8 +16,16 @@ const hashtagRouter = require('./routes/hashtag');
 const db = require('./models');
 const passportConfig = require('./passport');
 
+const Sequelize = require("sequelize");
+const SequelizeStore = require("connect-session-sequelize")(session.Store);
+const sequelize = new Sequelize("database", "username", "password", {
+  dialect: "sqlite",
+  storage: "./session.sqlite",
+});
+
 dotenv.config();
 const app = express();
+
 db.sequelize.sync()
 .then(() => {
   console.log('db 연결 성공!');
@@ -45,16 +53,32 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser(process.env.COOKIE_SECRET));
 
-app.use(session({
-  saveUninitialized: false,
-  resave: false,
-  secret: process.env.COOKIE_SECRET,
-  cookie: {
+// app.use(session({
+//   saveUninitialized: false,
+//   resave: false,
+//   secret: process.env.COOKIE_SECRET,
+//   cookie: {
+//     httpOnly: true,
+//     secure: false,
+//     domain: process.env.NODE_ENV === 'production' && '.nodebird.shop'
+//   },
+// }));
+
+app.use(
+  session({
+    secret:process.env.COOKIE_SECRET,
+    store: new SequelizeStore({
+      db: sequelize,
+    }),
+    resave: false, // we support the touch method so per the express-session docs this should be set to false
+    proxy: true, // if you do SSL outside of node.
+    cookie: {
     httpOnly: true,
     secure: false,
     domain: process.env.NODE_ENV === 'production' && '.nodebird.shop'
   },
-}));
+  })
+);
 
 app.use(passport.initialize());
 app.use(passport.session());
