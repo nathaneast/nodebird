@@ -69,11 +69,11 @@ app.use(cookieParser(process.env.COOKIE_SECRET));
 //   saveUninitialized: false,
 //   resave: false,
 //   secret: process.env.COOKIE_SECRET,
-//   cookie: {
-//     httpOnly: true,
-//     secure: false,
-//     domain: process.env.NODE_ENV === 'production' && '.nodebird.shop'
-//   },
+  // cookie: {
+  //   httpOnly: true,
+  //   secure: false,
+  //   domain: process.env.NODE_ENV === 'production' && '.nodebird.shop'
+  // },
 // }));
 
 app.use(session({
@@ -81,7 +81,12 @@ app.use(session({
   secret: process.env.COOKIE_SECRET,
   store: sessionStore,
   resave: false,
-  saveUninitialized: false
+  saveUninitialized: false,
+  cookie: {
+    httpOnly: true,
+    secure: false,
+    domain: process.env.NODE_ENV === 'production' && '.nodebird.shop'
+  },
 }));
 
 app.use(passport.initialize());
