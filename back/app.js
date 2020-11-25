@@ -16,15 +16,15 @@ const hashtagRouter = require('./routes/hashtag');
 const db = require('./models');
 const passportConfig = require('./passport');
 
+dotenv.config();
+const app = express();
+
 const Sequelize = require("sequelize");
 const SequelizeStore = require("connect-session-sequelize")(session.Store);
-const sequelize = new Sequelize("database", "username", "password", {
+const sequelize = new Sequelize("nodebird", "root", process.env.DB_PASSWORD, {
   dialect: "sqlite",
   storage: "./session.sqlite",
 });
-
-dotenv.config();
-const app = express();
 
 db.sequelize.sync()
 .then(() => {
