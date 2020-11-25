@@ -17,7 +17,7 @@ const db = require('./models');
 const passportConfig = require('./passport');
 
 const env = process.env.NODE_ENV || 'development';
-const config = require('../config/config')[env];
+const config = require('./config/config')[env];
 dotenv.config();
 const app = express();
 
