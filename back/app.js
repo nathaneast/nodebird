@@ -16,17 +16,27 @@ const hashtagRouter = require('./routes/hashtag');
 const db = require('./models');
 const passportConfig = require('./passport');
 
+const env = process.env.NODE_ENV || 'development';
+const config = require('../config/config')[env];
 dotenv.config();
 const app = express();
 
-const env = process.env.NODE_ENV || 'development';
-const config = require('./config/config')[env];
-const Sequelize = require("sequelize");
-const SequelizeStore = require("connect-session-sequelize")(session.Store);
-const sequelize = new Sequelize(config.database, config.username, config.password, {
-  dialect: "sqlite",
-  storage: "./session.sqlite",
-});
+/////////////////////////////////////////////////
+const MySQLStore = require('express-mysql-session')(session);
+
+const options = {
+  host: config.host,
+  port: 80,
+  user: config.username,
+  password: config.password,
+  database: config.database,
+};
+
+const connection = db.createConnection(options); // or mysql.createPool(options);
+const sessionStore = new MySQLStore({options}/* session store options */, connection);
+
+/////////////////////////////////////////////////
+
 
 db.sequelize.sync()
 .then(() => {
@@ -66,21 +76,13 @@ app.use(cookieParser(process.env.COOKIE_SECRET));
 //   },
 // }));
 
-app.use(
-  session({
-    secret:process.env.COOKIE_SECRET,
-    store: new SequelizeStore({
-      db: sequelize,
-    }),
-    resave: false, // we support the touch method so per the express-session docs this should be set to false
-    proxy: true, // if you do SSL outside of node.
-    cookie: {
-    httpOnly: true,
-    secure: false,
-    domain: process.env.NODE_ENV === 'production' && '.nodebird.shop'
-  },
-  })
-);
+app.use(session({
+  key: 'MySQLStore_nodebird',
+  secret: process.env.COOKIE_SECRET,
+  store: sessionStore,
+  resave: false,
+  saveUninitialized: false
+}));
 
 app.use(passport.initialize());
 app.use(passport.session());
