@@ -42,7 +42,7 @@ const Signup = () => {
   const [email, onChangeEmail] = useInput('');
   const [nickname, onChangeNickname] = useInput('');
   const [password, onChangePassword] = useInput('');
-  
+
   const onChangePasswordCheck = useCallback((e) => {
     setPasswordCheck(e.target.value);
     setPasswordError(e.target.value !== password);
@@ -91,7 +91,7 @@ const Signup = () => {
         <div>
           <label htmlFor='user-password-check'>비밀번호 체크</label>
           <br />
-          <Input 
+          <Input
             name='user-password-check'
             type='password'
             value={passwordCheck}
