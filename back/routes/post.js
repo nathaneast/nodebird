@@ -203,7 +203,7 @@ router.delete('/:postId/like', isLoggedIn, async (req, res, next) => {
 
 router.post('/images', isLoggedIn, upload.array('image'), (req, res, next) => {
   console.log(req.files);
-  res.json(req.files.map((v) => v.location));
+  res.json(req.files.map((v) => v.location.replace(/\/original\//, '/thumb/')));
 });
 
 router.post('/:postId/retweet', isLoggedIn, async (req, res, next) => {
