@@ -94,11 +94,21 @@ router.get('/:postId', async (req, res, next) => {
       where: { id: req.params.postId },
     });
     if (!post) {
-      return res.status(403).send('존재하지 않는 게시글 입니다!');
+      return res.status(404).send('존재하지 않는 게시글 입니다!');
     }
     const fullPost = await Post.findOne({
       where: { id: post.id },
       include: [
+        {
+          model: Post,
+          as: 'Retweet',
+          include: [{
+            model: User,
+            attributes: ['id', 'nickname'],
+          }, {
+            model: Image,
+          }]
+        }, 
         {
           model: Image,
         },
@@ -118,7 +128,7 @@ router.get('/:postId', async (req, res, next) => {
         {
           model: User,
           as: "Likers",
-          attributes: ["id"],
+          attributes: ["id", 'nickname'],
         }
       ],
     });
