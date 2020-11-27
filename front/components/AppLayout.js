@@ -1,5 +1,5 @@
 import React, { useCallback } from 'react';
-import Proptypes from 'prop-types';
+import PropTypes from 'prop-types';
 import Link from 'next/link';
 import { Input, Menu, Row, Col } from 'antd';
 import styled from 'styled-components';
@@ -11,7 +11,7 @@ import LoginForm from './LoginForm';
 import useInput from '../hooks/useInput';
 
 const SearchInput = styled(Input.Search)`
-  vertical-align: 'middle';
+  vertical-align: middle;
 `;
 
 const AppLayout = ({ children }) => {
@@ -50,15 +50,15 @@ const AppLayout = ({ children }) => {
         </Col>
         <Col xs={24} md={12}>{children}</Col>
         <Col xs={24} md={6}>
-          <a href="#" target="_blank" rel="noreferrer noopener">Nathan</a>
+          <a href="http://www.nodebird.shop" target="_blank" rel="noreferrer noopener">Nathan</a>
         </Col>
       </Row>
     </div>
   );
 };
 
-AppLayout.prototype = {
-  children: Proptypes.node.isRequired,
+AppLayout.propTypes = {
+  children: PropTypes.node.isRequired,
 };
 
 export default AppLayout;

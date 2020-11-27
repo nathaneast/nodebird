@@ -30,23 +30,28 @@ const Profile = () => {
     }
   }, [me && me.id]);
 
-  const loadMoreFollowers = useCallback(() => {
-    setFollowersLimit((prev) => prev + 3);
-  }, []);
-
   const loadMoreFollowings = useCallback(() => {
     setFollowingsLimit((prev) => prev + 3);
+  }, []);
+
+  const loadMoreFollowers = useCallback(() => {
+    setFollowersLimit((prev) => prev + 3);
   }, []);
 
   if (!me) {
     return '내 정보 로딩중...';
   }
 
+  if (followerError || followingError) {
+    console.error(followerError || followingError);
+    return <div>팔로잉/팔로워 로딩 중 에러가 발생합니다.</div>;
+  }
+
   return (
     <>
       <Head>
         <meta charSet="utf-8" />
-        <title>내 프로필 | nodeBird</title>
+        <title>내 프로필 | NodeBird</title>
       </Head>
       <AppLayout>
         <NicknameEditForm />

@@ -8,12 +8,10 @@ export default class MyDocument extends Document {
   static async getInitalProps(ctx) {
     const sheet = new ServerStyleSheet();
     const originalRenderPage = ctx.renderPage;
-
     try {
       ctx.renderPage = () => originalRenderPage({
         enhanceApp: (App) => (props) => sheet.collectStyles(<App {...props} />),
       });
-
       const initialProps = await Document.getInitialProps(ctx);
       return {
         ...initialProps,
@@ -37,7 +35,7 @@ export default class MyDocument extends Document {
         <Head />
         <body>
           <Main />
-          <script src="https://polyfill.io/v3/polyfill.min.js?features=es6,es7,es8,es9,NodeList.prototype.forEach&flags=gated" />
+          {/* <script src="https://polyfill.io/v3/polyfill.min.js?features=es6,es7,es8,es9,NodeList.prototype.forEach&flags=gated" /> */}
           <NextScript />
         </body>
       </Html>

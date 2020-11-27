@@ -74,7 +74,7 @@ const PostCard = ({ post }) => {
   const liked = post.Likers.find((v) => v.id === id);
 
   return (
-    <div style={{ marginBottom: "20" }}>
+    <div style={{ marginBottom: 20 }}>
       <Card
         cover={post.Images[0] && <PostImages images={post.Images} />}
         actions={[
@@ -91,7 +91,7 @@ const PostCard = ({ post }) => {
           <MessageOutlined key="comment" onClick={onToggleComment} />,
           <Popover
             key="more"
-            content={
+            content={(
               <Button.Group>
                 {id && post.User.id === id ? (
                   <>
@@ -109,7 +109,7 @@ const PostCard = ({ post }) => {
                   <Button>신고</Button>
                 )}
               </Button.Group>
-            }
+            )}
           >
             <EllipsisOutlined />
           </Popover>,
@@ -131,30 +131,30 @@ const PostCard = ({ post }) => {
               {moment(post.createdAt).format("YYYY.MM.DD")}
             </span>
             <Card.Meta
-              avatar={
+              avatar={(
                 <Link href={`/user/${post.Retweet.User.id}`}>
                   <a>
                     <Avatar>{post.Retweet.User.nickname[0]}</Avatar>
                   </a>
                 </Link>
-              }
+              )}
               title={post.Retweet.User.nickname}
               description={<PostCardContent postData={post.Retweet.content} />}
             />
           </Card>
         ) : (
           <>
-            <span style={{ float: "right" }}>
+            <div style={{ float: "right" }}>
               {moment(post.createdAt).format("YYYY.MM.DD")}
-            </span>
+            </div>
             <Card.Meta
-              avatar={
+              avatar={(
                 <Link href={`/user/${post.User.id}`}>
                   <a>
                     <Avatar>{post.User.nickname[0]}</Avatar>
                   </a>
                 </Link>
-              }
+              )}
               title={post.User.nickname}
               description={<PostCardContent postData={post.content} />}
             />
@@ -165,14 +165,14 @@ const PostCard = ({ post }) => {
         <>
           <CommentForm post={post} />
           <List
-            header={`${post.Comments.length} 댓글`}
+            header={`${post.Comments.length}개의 댓글`}
             itemLayout="horizontal"
             dataSource={post.Comments}
             renderItem={(item) => (
               <li>
                 <Comment
                   author={item.User.nickname}
-                  avatar={
+                  avatar={(
                     <Link
                       href={{ pathname: "/user", query: { id: item.id } }}
                       as={`/user/${item.id}`}
@@ -181,7 +181,7 @@ const PostCard = ({ post }) => {
                         <Avatar>{item.User.nickname}</Avatar>
                       </a>
                     </Link>
-                  }
+                  )}
                   content={item.content}
                 />
               </li>

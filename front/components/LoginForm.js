@@ -36,10 +36,11 @@ const LoginForm = () => {
   return (
     <FormWrapper onFinish={onSubmitForm}>
       <div>
-        <label htmlFor="user-email">아이디</label>
+        <label htmlFor="user-email">이메일</label>
         <br />
         <Input
           name="user-email"
+          type="email"
           value={email}
           onChange={onChangeEmail}
           required
