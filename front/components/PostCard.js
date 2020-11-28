@@ -26,7 +26,6 @@ const PostCard = ({ post }) => {
   const id = useSelector((state) => state.user.me?.id);
   const dispatch = useDispatch();
 
-
   const onRemovePost = useCallback(() => {
     if (!id) {
       return alert('로그인이 필요합니다.');
@@ -95,7 +94,7 @@ const PostCard = ({ post }) => {
               <Button.Group>
                 {id && post.User.id === id ? (
                   <>
-                    <Button>수정</Button>
+                    {!post.RetweetId && <Button>수정</Button>}
                     <Button
                       type="primary"
                       danger
