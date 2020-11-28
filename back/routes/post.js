@@ -139,6 +139,29 @@ router.get('/:postId', async (req, res, next) => {
   }
 });
 
+router.get('/:postId/edit', async (req, res, next) => {
+  try {
+    const post = await Post.findOne({
+      where: { id: req.params.postId },
+    });
+    if (!post) {
+      return res.status(404).send('존재하지 않는 게시글 입니다');
+    }
+    const postWithImage = await Post.findOne({
+      where: { id: post.id },
+      include: [
+        {
+          model: Image,
+        },
+      ],
+    });
+    res.status(200).json(postWithImage);
+  } catch (error) {
+    console.error(error);
+    next(error);
+  }
+});
+
 router.post('/:postId/comment', isLoggedIn, async (req, res, next) => {
   try {
     console.log('서버 comment요청 실행 ')

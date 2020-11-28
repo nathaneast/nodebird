@@ -35,8 +35,31 @@ import {
   LOAD_HASHTAG_POSTS_REQUEST,
   LOAD_HASHTAG_POSTS_SUCCESS,
   LOAD_HASHTAG_POSTS_FAILURE,
+  EDIT_POST_REQUEST,
+  EDIT_POST_SUCCESS,
+  EDIT_POST_FAILURE,
 } from '../reducers/post';
 import { ADD_POST_TO_ME, REMOVE_POST_OF_ME } from '../reducers/user';
+
+function editPostAPI(data) {
+  return axios.get(`/post/${data}/edit`);
+}
+
+function* editPost(action) {
+  try {
+    const result = yield call(editPostAPI, action.data);
+    yield put({
+      type: EDIT_POST_SUCCESS,
+      data: result.data,
+    });
+  } catch (err) {
+    console.error(err);
+    yield put({
+      type: EDIT_POST_FAILURE,
+      error: err.response.data,
+    });
+  }
+}
 
 function loadUserPostsAPI(data, lastId) {
   return axios.get(`/user/${data}/posts?lastId=${lastId || 0}`);
@@ -270,6 +293,10 @@ function* addComment(action) {
   }
 }
 
+function* watchEditPost() {
+  yield takeLatest(EDIT_POST_REQUEST, editPost);
+}
+
 function* watchRetweet() {
   yield takeLatest(RETWEET_REQUEST, retweet);
 }
@@ -316,6 +343,7 @@ function* watchRemovePost() {
 
 export default function* postSaga() {
   yield all([
+    fork(watchEditPost),
     fork(watchLoadPost),
     fork(watchRetweet),
     fork(watchUploadImages),

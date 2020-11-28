@@ -32,6 +32,9 @@ export const initialState = {
   retweetLoading: false,
   retweetDone: false,
   retweetError: null,
+  editPostLoading: false,
+  editPostDone: false,
+  editPostError: null,
 };
 
 export const LOAD_USER_POSTS_REQUEST = 'LOAD_USER_POSTS_REQUEST';
@@ -78,6 +81,10 @@ export const RETWEET_REQUEST = 'RETWEET_REQUEST';
 export const RETWEET_SUCCESS = 'RETWEET_SUCCESS';
 export const RETWEET_FAILURE = 'RETWEET_FAILURE';
 
+export const EDIT_POST_REQUEST = 'EDIT_POST_REQUEST';
+export const EDIT_POST_SUCCESS = 'EDIT_POST_SUCCESS';
+export const EDIT_POST_FAILURE = 'EDIT_POST_FAILURE';
+
 export const REMOVE_IMAGE = 'REMOVE_IMAGE';
 
 export const addPost = (data) => ({
@@ -96,10 +103,26 @@ const reducer = (state = initialState, action) => {
       case REMOVE_IMAGE:
         draft.imagePaths = draft.imagePaths.filter((v, i) => i !== action.data);
         break;
+      case EDIT_POST_REQUEST:
+        draft.editPostLoading = true;
+        draft.editPostDone = false;
+        draft.editPostError = null;
+        draft.singlePost = null;
+        break;
+      case EDIT_POST_SUCCESS:
+        draft.editPostLoading = false;
+        draft.editPostDone = true;
+        draft.singlePost = action.data;
+        break;
+      case EDIT_POST_FAILURE:
+        draft.editPostLoading = false;
+        draft.editPostError = action.error;
+        break;
       case LOAD_POST_REQUEST:
         draft.loadPostLoading = true;
         draft.loadPostDone = false;
         draft.loadPostError = null;
+        draft.singlePost = null;
         break;
       case LOAD_POST_SUCCESS:
         draft.loadPostLoading = false;

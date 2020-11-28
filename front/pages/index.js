@@ -6,6 +6,7 @@ import axios from 'axios';
 import AppLayout from '../components/AppLayout';
 import PostForm from '../components/PostForm';
 import PostCard from '../components/PostCard';
+import EditPostForm from '../components/EditPostForm';
 import { LOAD_MY_INFO_REQUEST } from '../reducers/user';
 import { LOAD_POSTS_REQUEST } from '../reducers/post';
 import wrapper from '../store/configureStore';
@@ -18,6 +19,7 @@ const Home = () => {
     hasMorePosts,
     loadPostsLoading,
     retweetError,
+    singlePost,
   } = useSelector((state) => state.post);
 
   useEffect(() => {
@@ -48,6 +50,7 @@ const Home = () => {
     <AppLayout>
       {me && <PostForm />}
       {mainPosts.map((post) => <PostCard key={post.id} post={post} />)}
+      {singlePost && <EditPostForm post={singlePost} />}
     </AppLayout>
   );
 };

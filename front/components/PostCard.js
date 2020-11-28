@@ -15,7 +15,7 @@ import moment from 'moment';
 import PostImages from './PostImages';
 import CommentForm from './CommentForm';
 import PostCardContent from './PostCardContent';
-import { REMOVE_POST_REQUEST, LIKE_POST_REQUEST, UNLIKE_POST_REQUEST, RETWEET_REQUEST } from '../reducers/post';
+import { REMOVE_POST_REQUEST, LIKE_POST_REQUEST, UNLIKE_POST_REQUEST, RETWEET_REQUEST, EDIT_POST_REQUEST } from '../reducers/post';
 import FollowButton from './FollowButton';
 
 moment.locale("ko");
@@ -25,6 +25,16 @@ const PostCard = ({ post }) => {
   const { removePostLoading } = useSelector((state) => state.post);
   const id = useSelector((state) => state.user.me?.id);
   const dispatch = useDispatch();
+
+  const onEditPost = useCallback(() => {
+    if (id !== post.User.id) {
+      return alert('내가 작성한 게시글만 수정 가능 합니다.');
+    }
+    return dispatch({
+      type: EDIT_POST_REQUEST,
+      data: post.id,
+    });
+  }, [id]);
 
   const onRemovePost = useCallback(() => {
     if (!id) {
@@ -94,7 +104,7 @@ const PostCard = ({ post }) => {
               <Button.Group>
                 {id && post.User.id === id ? (
                   <>
-                    {!post.RetweetId && <Button>수정</Button>}
+                    {!post.RetweetId && <Button onClick={onEditPost}>수정</Button>}
                     <Button
                       type="primary"
                       danger
