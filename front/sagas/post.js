@@ -42,12 +42,13 @@ import {
 import { ADD_POST_TO_ME, REMOVE_POST_OF_ME } from '../reducers/user';
 
 function editPostAPI(data) {
-  return axios.get(`/post/${data}/edit`);
+  return axios.patch(`/post/${data.postId}/edit`, data);
 }
 
 function* editPost(action) {
   try {
     const result = yield call(editPostAPI, action.data);
+    console.log(result, 'editPost result');
     yield put({
       type: EDIT_POST_SUCCESS,
       data: result.data,

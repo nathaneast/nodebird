@@ -139,7 +139,7 @@ router.get('/:postId', async (req, res, next) => {
   }
 });
 
-router.get('/:postId/edit', async (req, res, next) => {
+router.get('/:postId/edit', isLoggedIn, async (req, res, next) => {
   try {
     const post = await Post.findOne({
       where: { id: req.params.postId },
@@ -147,15 +147,69 @@ router.get('/:postId/edit', async (req, res, next) => {
     if (!post) {
       return res.status(404).send('존재하지 않는 게시글 입니다');
     }
-    const postWithImage = await Post.findOne({
-      where: { id: post.id },
-      include: [
-        {
-          model: Image,
-        },
-      ],
-    });
-    res.status(200).json(postWithImage);
+    res.status(200).json(post);
+  } catch (error) {
+    console.error(error);
+    next(error);
+  }
+});
+
+router.patch('/:postId/edit', isLoggedIn, async (req, res, next) => {
+  try {
+    const post = await Post.findOne({
+      where: { id: req.params.postId },
+    }); 
+    const duplicateTags = [];
+    const removeTags = [];
+    const addTags = [];
+    const beforeHashtags = post.content.match(/#[^\s#]+/g);
+    const editedHashtags = req.body.content.match(/#[^\s#]+/g);
+
+    console.log(beforeHashtags, 'beforeHashtags');
+    console.log(editedHashtags, 'editedHashtags');
+  if (beforeHashtags ) {
+    for (tag of beforeHashtags) {
+      const findTag = editedHashtags ? editedHashtags.find(item => item === tag) : null;
+      if (findTag) {
+        duplicateTags.push(tag);
+      } else {
+        removeTags.push(tag);
+      }
+    }
+  }
+  
+  console.log(duplicateTags, 'duplicateTags');
+
+  if (editedHashtags) {
+    for (tag of editedHashtags) {
+      const findTag = duplicateTags.find(item => item === tag);
+      if (!findTag) {
+        addTags.push(tag);
+      }
+    }
+  }
+
+    console.log(removeTags, 'removeTags');
+    console.log(addTags, 'addTags');
+
+    if (removeTags.length) {
+    const tagKeys = await Promise.all(removeTags.map((tag) => Hashtag.findOne({
+          where: { name: tag.slice(1).toLowerCase() },
+          attributes: ['id'],
+        })));
+    await post.removeHashtags(tagKeys.map((key) => key));
+    }
+
+    if (addTags.length) {
+      const newHashTags = await Promise.all(addTags.map((tag) => Hashtag.findOrCreate({
+        where: { name: tag.slice(1).toLowerCase() }
+      })));
+      await post.addHashtags(newHashTags.map((v) => v[0]));
+    }
+    post.content = req.body.content;
+    await post.save();
+
+    res.status(200).json('success eidt post!');
   } catch (error) {
     console.error(error);
     next(error);
@@ -164,7 +218,6 @@ router.get('/:postId/edit', async (req, res, next) => {
 
 router.post('/:postId/comment', isLoggedIn, async (req, res, next) => {
   try {
-    console.log('서버 comment요청 실행 ')
     const post = await Post.findOne({
       where: { id: req.params.postId },
     });

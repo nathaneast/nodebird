@@ -15,25 +15,24 @@ import moment from 'moment';
 import PostImages from './PostImages';
 import CommentForm from './CommentForm';
 import PostCardContent from './PostCardContent';
-import { REMOVE_POST_REQUEST, LIKE_POST_REQUEST, UNLIKE_POST_REQUEST, RETWEET_REQUEST, EDIT_POST_REQUEST } from '../reducers/post';
+import { REMOVE_POST_REQUEST, LIKE_POST_REQUEST, UNLIKE_POST_REQUEST, RETWEET_REQUEST } from '../reducers/post';
 import FollowButton from './FollowButton';
 
 moment.locale("ko");
 
 const PostCard = ({ post }) => {
+  const [content, setContent] = useState(post.content);
+  const [editMode, setEditMode] = useState(false);
   const [commentFormOpened, setCommentFormOpened] = useState(false);
   const { removePostLoading } = useSelector((state) => state.post);
   const id = useSelector((state) => state.user.me?.id);
   const dispatch = useDispatch();
 
-  const onEditPost = useCallback(() => {
+  const onEditPost = useCallback(async () => {
     if (id !== post.User.id) {
       return alert('내가 작성한 게시글만 수정 가능 합니다.');
     }
-    return dispatch({
-      type: EDIT_POST_REQUEST,
-      data: post.id,
-    });
+    setEditMode((prev) => !prev);
   }, [id]);
 
   const onRemovePost = useCallback(() => {
@@ -100,11 +99,13 @@ const PostCard = ({ post }) => {
           <MessageOutlined key="comment" onClick={onToggleComment} />,
           <Popover
             key="more"
-            content={(
+            content={
               <Button.Group>
                 {id && post.User.id === id ? (
                   <>
-                    {!post.RetweetId && <Button onClick={onEditPost}>수정</Button>}
+                    {!post.RetweetId && (
+                      <Button onClick={onEditPost}>수정</Button>
+                    )}
                     <Button
                       type="primary"
                       danger
@@ -118,7 +119,7 @@ const PostCard = ({ post }) => {
                   <Button>신고</Button>
                 )}
               </Button.Group>
-            )}
+            }
           >
             <EllipsisOutlined />
           </Popover>,
@@ -140,15 +141,19 @@ const PostCard = ({ post }) => {
               {moment(post.createdAt).format("YYYY.MM.DD")}
             </span>
             <Card.Meta
-              avatar={(
+              avatar={
                 <Link href={`/user/${post.Retweet.User.id}`} prefetch={false}>
                   <a>
                     <Avatar>{post.Retweet.User.nickname[0]}</Avatar>
                   </a>
                 </Link>
-              )}
+              }
               title={post.Retweet.User.nickname}
-              description={<PostCardContent postData={post.Retweet.content} />}
+              description={
+                <PostCardContent 
+                  content={post.Retweet.content}
+                  editMode={editMode}
+                />}
             />
           </Card>
         ) : (
@@ -157,15 +162,23 @@ const PostCard = ({ post }) => {
               {moment(post.createdAt).format("YYYY.MM.DD")}
             </div>
             <Card.Meta
-              avatar={(
+              avatar={
                 <Link href={`/user/${post.User.id}`} prefetch={false}>
                   <a>
                     <Avatar>{post.User.nickname[0]}</Avatar>
                   </a>
                 </Link>
-              )}
+              }
               title={post.User.nickname}
-              description={<PostCardContent postData={post.content} />}
+              description={
+                <PostCardContent
+                  content={content}
+                  editMode={editMode}
+                  postId={post.id}
+                  setContent={setContent}
+                  editOff={onEditPost}
+                />
+              }
             />
           </>
         )}
@@ -181,7 +194,7 @@ const PostCard = ({ post }) => {
               <li>
                 <Comment
                   author={item.User.nickname}
-                  avatar={(
+                  avatar={
                     <Link
                       href={{ pathname: "/user", query: { id: item.id } }}
                       as={`/user/${item.id}`}
@@ -191,7 +204,7 @@ const PostCard = ({ post }) => {
                         <Avatar>{item.User.nickname}</Avatar>
                       </a>
                     </Link>
-                  )}
+                  }
                   content={item.content}
                 />
               </li>
@@ -208,7 +221,7 @@ PostCard.propTypes = {
     id: PropTypes.number,
     User: PropTypes.object,
     content: PropTypes.string,
-    createdAt: PropTypes.object,
+    createdAt: PropTypes.string,
     Comments: PropTypes.arrayOf(PropTypes.any),
     Images: PropTypes.arrayOf(PropTypes.any),
     Likers: PropTypes.arrayOf(PropTypes.object),
