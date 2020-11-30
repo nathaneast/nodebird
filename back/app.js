@@ -50,10 +50,10 @@ app.use(session({
   saveUninitialized: false,
   resave: false,
   secret: process.env.COOKIE_SECRET,
-  // proxy: true,
+  proxy: true,
   cookie: {
     httpOnly: true,
-    secure: false,
+    secure: true,
     domain: process.env.NODE_ENV === 'production' && '.nodebird.shop'
   },
 }));
